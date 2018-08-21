@@ -10,6 +10,7 @@ Para isso você deve usar os dados disponibilizados nas seguintes URL's:
 GET /data/{SEU-ID}/prices: Retorna um array com as datas de alteração do preço do combustível.
 GET /data/{SEU-ID}/supplies: Retorna um array com datas e abastecimentos do veículo em reais (não em litros).
 GET /data/{SEU-ID}/spents: Retorna um array com datas e uso do veículo em quilômetros (quilometragem percorrida no dia).
+
 O seu veículo possui um consumo estimado de 12km/l.
 
 Explicação:
@@ -39,6 +40,7 @@ prices	supplies	spents
 
 Para cada abastecimento, você deverá descobrir quantos litros foram adicionados com base no valor vigente do combustível na data do abastecimento.
 Exemplo: no dia 11/01/2017, o valor do combustível era R$ 4,96 o litro. O valor total do abastecimento foi de R$ 149,47. Ou seja, foram abastecidos 30.13 litros.
+Resultado = data X, (spents.value / prices.value)
 
 Para cada uso do veículo, você deverá calcular a quantidade de combustível gasta levando em consideração o consumo estimado.
 Exemplo: No dia 11/01/2017 o veículo percorreu 155.1 km. Como o consumo estimado do veículo é de 12 km/l (no exemplo), conclui-se que o veículo gastou 12.92 litros de combustível.
