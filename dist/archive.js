@@ -7,6 +7,14 @@ var Archive = /** @class */ (function () {
         this.spents = JSON.parse(fs.readFileSync(dirSpents, 'utf8'));
         this.supplies = JSON.parse(fs.readFileSync(dirSupplies, 'utf8'));
     }
+    Archive.prototype.createJson = function (obj) {
+        var json = JSON.stringify(obj);
+        fs.writeFile("./server/file.json", json, 'utf8', function (err) {
+            if (err)
+                throw err;
+            console.log('Created');
+        });
+    };
     return Archive;
 }());
 exports.default = Archive;

@@ -44,6 +44,8 @@ Resultado = data X, (spents.value / prices.value)
 
 Para cada uso do veículo, você deverá calcular a quantidade de combustível gasta levando em consideração o consumo estimado.
 Exemplo: No dia 11/01/2017 o veículo percorreu 155.1 km. Como o consumo estimado do veículo é de 12 km/l (no exemplo), conclui-se que o veículo gastou 12.92 litros de combustível.
+155,1 / 12 = 12,92
+
 
 Após calcular o saldo de todos os dias você deverá enviar o resultado para a API: POST /check?id=SEU-ID. No exemplo, o payload enviado foi:
 

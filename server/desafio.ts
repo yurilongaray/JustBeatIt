@@ -25,11 +25,11 @@ if(archive.prices && archive.spents && archive.supplies) {
     let totalDayPrice: number = 0;
     let countX: number = 0;
     
-    const X = prices.map(function(price) {
+    prices.map(function(price) {
         return totalDayPrice += price.value;
     }); 
 
-    const Y =  prices.map(function(price) {
+    prices.map(function(price) {
         return countX ++;
     }); 
     
@@ -55,14 +55,6 @@ if(archive.prices && archive.spents && archive.supplies) {
                 
                 return litersSupplied.push({date: dateSuplied, value: liters});
             } 
-            // else {
-
-            //     const liters = (supplie.value / averagePricePerDay);
-            //     const dateSuplied = supplie.date;
-            //     // console.log(litersRounded + ' x ' + dateSuplied);
-                
-            //     litersSupplied.push({date: dateSuplied, value: liters});
-            // }
         });
 
     });
@@ -79,7 +71,7 @@ if(archive.prices && archive.spents && archive.supplies) {
     litersSupplied.forEach(element => {
         test.forEach(el => {
             if(element.date === el.date) {
-                el.value = element.value;
+                el.value = element.value * 12;
             }
         });
     });
@@ -87,7 +79,7 @@ if(archive.prices && archive.spents && archive.supplies) {
     supplies.map((supply) => {
         test.map((ts) => {
             if(ts.value === -1 && ts.date === supply.date) {
-                let liters = (supply.value / averageGas);
+                let liters = (supply.value / averageGas) * 12;
                 // console.log(liters + ' x ' + dateSuplied);
                 ts.value = liters;
             }
@@ -95,138 +87,122 @@ if(archive.prices && archive.spents && archive.supplies) {
     })
     
     /* Resultado 1 */
-    // test.map((values) => {
-    //     console.log(values)
-    // })
+    test.map((values) => {
+        console.log(values)
+    })  
 
-    /* One Way X */
-    // prices.map((price) => {
-    //     return supplies.filter((supply) => {
-    //         if(supply.date.indexOf(price.date) != -1) {
-
-    //             let liters = (supply.value / price.value);
-    //             let dateSuplied = supply.date;
-    //             // console.log(liters + ' x ' + dateSuplied);
-                
-    //             console.log(' já existe na coleção');
-    //             litersSupplied.push({date: dateSuplied, value: liters});
-
-
-    //         } else if(supply.date.indexOf(price.date) == -1) {
-    //             console.log(' NAO');
-
-    //             let liters = (supply.value / averagePricePerDay);
-    //             let dateSuplied = supply.date;
-    //             // console.log(liters + ' x ' + dateSuplied);
-                
-    //             litersSupplied.push({date: dateSuplied, value: liters});
-    //         }
-    //     });
-    // })
-
-    // console.log(suppliesDates)
- 
-    // litersSupplied is an array of Object that contains Liters paid per Day
-    // litersSupplied.map((value) => {
-    //     console.log(value);
-    // });
-
-
-    
-    // secondlitersSupplied.map((values) => {
-    //     console.log(values);
-    // })
-    
-    let litersWasted = [];
-    let etc = []
-
-    spents.map((value) => {
-        etc.push({
-            date: value.date,
-            value: -1
-        })
-    })
-
-    spents.forEach(spent => {
-        test.forEach(ts => {
-            if(ts.date === spent.date) {
-                let liters = (spent.value / ts.value);
-                litersWasted.push({
-                    date: ts.date,
-                    value: liters
-                })
-            }
-        })
-    });
-
-    etc.forEach(etc => { 
-        litersWasted.forEach(lt => {
-            if(etc.date === lt.date) {
-                etc.value = parseFloat(lt.value.toFixed(2));
-            }
-        })
-    })
-
-    ///////////////////////////////////
+    // ///////////////////////////////////
+    /* Average Km that can be road */
     let totalDay: number = 0;
     let countY: number = 0;
     
-    const Z = test.map(function(spent) {
-        return totalDay += spent.value;
+    test.map(function(liter) {
+        return totalDay += liter.value;
     }); 
 
-    const V =  spents.map(function(spent) {
+    test.map(function(test) {
         return countY ++;
     }); 
 
     let averageKm = totalDay / countY;
 
-    ///////////////////////////////////
+    // ///////////////////////////////////
 
-    etc.map((etc) => {
-        spents.map((spent) => {
-            if(etc.value === -1 && etc.date === spent.date) {
-                let liters = (spent.value / averageKm);
-                // console.log(liters + ' x ' + dateSuplied);
-                etc.value = parseFloat(liters.toFixed(2));
-            }
+
+    //teste contem quantos km é possível que o veiculo ande de acordo com os litros comprados por dia
+
+    let kmDay = [];
+    let etcx = [];
+
+    spents.forEach(element => {
+        kmDay.push({
+            date: element.date,
+            value: -1
         })
-    })
+    });
 
-    /* Resultado final */
-    etc.map((value) => {
+    kmDay.forEach(km => {
+        test.forEach(ts => {
+            if(km.date === ts.date) {
+                km.value = ts.value
+            } else if (km.date !== ts.date && km.value === -1) {
+                km.value = averageKm;
+            }
+        });
+    });
+
+    kmDay.map((value) => {
         console.log(value)
     })
 
-    console.log('Average Gas Per Day: ' + averageGas);
-    console.log('Average Km per Day: ' + averageKm);
+    // OK ^
 
-    // litersWasted.forEach(waste => {
-    //     test.forEach(ts => {
-            
-    //         if(waste.date === ts.date) {
-    //             let liters = 
-    //         }
-    //     });
-    // });
-    
+    //Validação e verificação de valores
+
+
+    // let litersWasted = [];
+    // let etc = []
+
+    // spents.map((value) => {
+    //     etc.push({
+    //         date: value.date,
+    //         value: -1
+    //     })
+    // })
 
     // spents.forEach(spent => {
-    //     litersSupplied.forEach(literSuplied => {
-    //         if(spent.date === literSuplied.date) {
-    //             // let litersRounded = Math.round(liters * 100) / 100;
-    //             let dateDrove = spent.date;
-    //             let gasWasted = Math.round( (spent.value / literSuplied.value) * 100 / 100);
+    //     test.forEach(ts => {
+    //         if(ts.date === spent.date) {
+    //             let liters = (spent.value / ts.value);
     //             litersWasted.push({
-    //                 date: dateDrove,
-    //                 value: gasWasted
+    //                 date: ts.date,
+    //                 value: liters
     //             })
     //         }
     //     })
     // });
 
-    // console.log(litersWasted);
+    // etc.forEach(etc => { 
+    //     litersWasted.forEach(lt => {
+    //         if(etc.date === lt.date) {
+    //             etc.value = parseFloat(lt.value.toFixed(2));
+    //         }
+    //     })
+    // })
+  
+    // etc.map((etc) => {
+    //     spents.map((spent) => {
+    //         if(etc.value === -1 && etc.date === spent.date) {
+    //             let liters = (spent.value / averageKm);
+    //             // console.log(liters + ' x ' + dateSuplied);
+    //             etc.value = parseFloat(liters.toFixed(2));
+    //         }
+    //     })
+    // })
+
+    // /* Resultado final */
+    // // etc.map((value) => {
+    // //     console.log(value)
+    // // })
+
+    console.log('Average Gas Per Day: ' + averageGas);
+    console.log('Average Km per Day: ' + averageKm);
+
+    // archive.createJson(etc);
 
     /* Post /check?id=SEU-ID */
-}
+    // const url = 'https://challenge-for-adventurers.herokuapp.com';
+    // const id = '5b7c0c20cf8c8200147dcdc5';
+    // console.log(`Iniciando POST para: ${url}/check?${id}`)
+
+    // fetch(`${url}/check?id=${id}`, 
+    //     { 
+    //         method: 'POST', 
+    //         body: JSON.stringify(etc),
+	//         headers: { 'Content-Type': 'application/json' },
+    //     })
+	// .then(res => res.json())
+	// .then(json => console.log(json));
+
+}   
 

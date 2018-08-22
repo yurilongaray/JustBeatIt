@@ -12,6 +12,15 @@ class Archive {
         this.supplies = JSON.parse(fs.readFileSync(dirSupplies, 'utf8'));
     }
 
+    createJson(obj) {
+        
+    const json = JSON.stringify(obj);
+    fs.writeFile("./server/file.json", json, 'utf8', function (err) {
+        if (err) throw err;
+        console.log('Created');
+        }
+    );
+    }
 }
 
 export default Archive;
