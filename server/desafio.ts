@@ -1,26 +1,17 @@
 import Archive from "./archive";
-import fetch from 'node-fetch';
 
-//Todos os arquivos:
+//Leitura dos arquivos (Home, Work):
 const archive = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json','/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 // const archive = new Archive('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 
-if(archive.prices && archive.spents && archive.supplies) {
+let prices = archive.prices; //alteração do preço do combustível.
+let spents = archive.spents; //uso do veículo em quilômetros (quilometragem percorrida no dia).
+let supplies = archive.supplies; //bastecimentos do veículo em reais (não em litros).
+let xobj = []
+let yobj = []
 
-    let prices = archive.prices; //array com as datas de alteração do preço do combustível.
-    let spents = archive.spents; //array com datas e uso do veículo em quilômetros (quilometragem percorrida no dia).
-    let supplies = archive.supplies; //array com datas e abastecimentos do veículo em reais (não em litros).
-    
-    console.log('Existem dados');
+if(prices && spents && supplies) {
 
-    const suppliesDates = supplies.map((supplyDate) => {
-        return supplyDate.date;
-    });
-    const pricesDates = supplies.map((priceDate) => {
-        return priceDate.date;
-    });
-
-    ///////////////////////////////////
     /* Average Liter Price per Day */
     let totalDayPrice: number = 0;
     let countX: number = 0;
@@ -34,175 +25,91 @@ if(archive.prices && archive.spents && archive.supplies) {
     }); 
     
     //Average Result:
-    let averageGas = totalDayPrice / countX;
-    // console.log('Average per Day: ' + averageGas);
+    let averageGasPrice = (totalDayPrice / countX);
 
-    /* Liters Suplied per Day */
-    let litersSupplied = [];
+    /* /////////////////////////// */
 
-    ////////////////////////////
+    
 
-    /* One Way X */
-    supplies.forEach(supply => {
-        
-        prices.forEach(price => {
+    /*  
+        Applying, into the objX, all the dates present on spents 
+        Converting the km on liters by x/12
+        Creating the other props 
+    */
+    spents.map((spent) => {
+        let litersSpent = (spent.value / 12)
+        xobj.push({
+            date: spent.date,
+            kmSpent: spent.value,
+            litersSpent: litersSpent,
+            gasPriceDay: 0,
+            litersSupplied: 0,
+            moneySpentOnGas: 0,
+            kmToRoad: 0,
+            litersLeft: 0,
+            litersMissed: 0,
+            totalGasDay: 0
+        })
+    })
 
-            if(price.date === supply.date) {
-
-                const liters = (supply.value / price.value);
-                const dateSuplied = supply.date;
-                // console.log(liters + ' x ' + dateSuplied);
-                
-                return litersSupplied.push({date: dateSuplied, value: liters});
+    // xobj / Price = ( price and average per day)
+    prices.forEach(price => {
+        xobj.forEach(li => {
+            if(price.date === li.date) {
+                li.gasPriceDay = price.value
             } 
+            else if(price.date !== li.date && li.gasPriceDay === 0 ) {
+                li.gasPriceDay = averageGasPrice;
+            }
         });
-
     });
-    
-    const test = []
-    
-    supplies.map((value) => {
-        return test.push({ 
-            date: value.date,
-            value: -1
+
+    // xobj / supplies = gas, money supplied and the total km to road
+    supplies.forEach(supply => {
+        xobj.forEach(li => {
+            if(supply.date === li.date) {
+                li.moneySpentOnGas = supply.value;
+                li.litersSupplied = (supply.value / li.gasPriceDay);
+                li.kmToRoad = (li.litersSupplied * 12);
+            } 
+            else if( (supply.date !== li.date) && (li.gasSupplied === 0) ) {
+                li.litersSupplied = 'x';
+                li.gasPriceDay = 'x';
+                li.kmToRoad = 'x';
+            }
         });
+    });
+
+    //xobj litersLeft
+    xobj.map((li) => {
+        if(li.litersSupplied > li.litersSpent) {
+            return li.litersLeft = (li.litersSupplied - li.litersSpent)
+        }
+        else if(li.litersSupplied < li.litersSpent) {
+            return li.litersMissed = (li.litersSpent - li.litersSupplied)
+        }
     })
 
-    litersSupplied.forEach(element => {
-        test.forEach(el => {
-            if(element.date === el.date) {
-                el.value = element.value * 12;
-            }
-        });
-    });
-
-    supplies.map((supply) => {
-        test.map((ts) => {
-            if(ts.value === -1 && ts.date === supply.date) {
-                let liters = (supply.value / averageGas) * 12;
-                // console.log(liters + ' x ' + dateSuplied);
-                ts.value = liters;
-            }
+    /* Passando para o Obj de destino */
+    xobj.map((values) => {
+        let result:number = parseFloat(((values.litersLeft !== 0) ? values.litersLeft : values.litersMissed).toFixed(2));
+        yobj.push({
+            date: values.date,
+            value: result
         })
     })
-    
-    /* Resultado 1 */
-    test.map((values) => {
-        console.log(values)
-    })  
 
-    // ///////////////////////////////////
-    /* Average Km that can be road */
-    let totalDay: number = 0;
-    let countY: number = 0;
-    
-    test.map(function(liter) {
-        return totalDay += liter.value;
-    }); 
-
-    test.map(function(test) {
-        return countY ++;
-    }); 
-
-    let averageKm = totalDay / countY;
-
-    // ///////////////////////////////////
-
-
-    //teste contem quantos km é possível que o veiculo ande de acordo com os litros comprados por dia
-
-    let kmDay = [];
-    let etcx = [];
-
-    spents.forEach(element => {
-        kmDay.push({
-            date: element.date,
-            value: -1
-        })
-    });
-
-    kmDay.forEach(km => {
-        test.forEach(ts => {
-            if(km.date === ts.date) {
-                km.value = ts.value
-            } else if (km.date !== ts.date && km.value === -1) {
-                km.value = averageKm;
-            }
-        });
-    });
-
-    kmDay.map((value) => {
-        console.log(value)
+    /* Debugger */
+    yobj.map((value) => {
+        console.log(value);
+        console.log('');
     })
+    console.log('AverageGasPrice: ' + averageGasPrice);
 
-    // OK ^
+    /* Create json.file */
+    archive.createJson(xobj);
 
-    //Validação e verificação de valores
+    /* Send POST do destiny */
+    archive.sendPost(yobj);
 
-
-    // let litersWasted = [];
-    // let etc = []
-
-    // spents.map((value) => {
-    //     etc.push({
-    //         date: value.date,
-    //         value: -1
-    //     })
-    // })
-
-    // spents.forEach(spent => {
-    //     test.forEach(ts => {
-    //         if(ts.date === spent.date) {
-    //             let liters = (spent.value / ts.value);
-    //             litersWasted.push({
-    //                 date: ts.date,
-    //                 value: liters
-    //             })
-    //         }
-    //     })
-    // });
-
-    // etc.forEach(etc => { 
-    //     litersWasted.forEach(lt => {
-    //         if(etc.date === lt.date) {
-    //             etc.value = parseFloat(lt.value.toFixed(2));
-    //         }
-    //     })
-    // })
-  
-    // etc.map((etc) => {
-    //     spents.map((spent) => {
-    //         if(etc.value === -1 && etc.date === spent.date) {
-    //             let liters = (spent.value / averageKm);
-    //             // console.log(liters + ' x ' + dateSuplied);
-    //             etc.value = parseFloat(liters.toFixed(2));
-    //         }
-    //     })
-    // })
-
-    // /* Resultado final */
-    // // etc.map((value) => {
-    // //     console.log(value)
-    // // })
-
-    console.log('Average Gas Per Day: ' + averageGas);
-    console.log('Average Km per Day: ' + averageKm);
-
-    // archive.createJson(etc);
-
-    /* Post /check?id=SEU-ID */
-    // const url = 'https://challenge-for-adventurers.herokuapp.com';
-    // const id = '5b7c0c20cf8c8200147dcdc5';
-    // console.log(`Iniciando POST para: ${url}/check?${id}`)
-
-    // fetch(`${url}/check?id=${id}`, 
-    //     { 
-    //         method: 'POST', 
-    //         body: JSON.stringify(etc),
-	//         headers: { 'Content-Type': 'application/json' },
-    //     })
-	// .then(res => res.json())
-	// .then(json => console.log(json));
-
-}   
-
+}//End If
