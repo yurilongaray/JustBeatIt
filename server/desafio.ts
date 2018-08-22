@@ -12,10 +12,13 @@ if(archive.prices && archive.spents && archive.supplies) {
     
     console.log('Existem dados');
 
-    const suppliesDates = supplies.map((supply) => {
-        return supply.date;
-    })
-    
+    const suppliesDates = supplies.map((supplyDate) => {
+        return supplyDate.date;
+    });
+    const pricesDates = supplies.map((priceDate) => {
+        return priceDate.date;
+    });
+
     /* Average Liter Price per Day */
     let totalDayPrice: number = 0;
     let countX: number = 0;
@@ -29,25 +32,25 @@ if(archive.prices && archive.spents && archive.supplies) {
     }); 
     
     //Average Result:
-    let averagePricePerDay = totalDayPrice / countX;
-    console.log(totalDayPrice + ' - ' + countX + ', Average per Day: ' + averagePricePerDay);
+    let averageGas = totalDayPrice / countX;
+    console.log('Average per Day: ' + averageGas);
 
     /* Liters Suplied per Day */
     let litersSupplied = [];
 
     /* One Way X */
-    // prices.forEach(price => {
-        // supplies.forEach(supplie => {
-        //     if(price.date === supplie.date) {
+    supplies.forEach(supply => {
+        
+        prices.forEach(price => {
 
-        //         let liters = (supplie.value / price.value);
-        //         let dateSuplied = supplie.date;
-        //         // console.log(liters + ' x ' + dateSuplied);
+            if(price.date === supply.date) {
+
+                const liters = (supply.value / price.value);
+                const dateSuplied = supply.date;
+                // console.log(liters + ' x ' + dateSuplied);
                 
-        //         litersSupplied.push({date: dateSuplied, value: liters});
-
-        //     } 
-            
+                return litersSupplied.push({date: dateSuplied, value: liters});
+            } 
             // else {
 
             //     let liters = (supplie.value / averagePricePerDay);
@@ -56,9 +59,11 @@ if(archive.prices && archive.spents && archive.supplies) {
                 
             //     litersSupplied.push({date: dateSuplied, value: liters});
             // }
-    //     });
-    // });
+        });
 
+    });
+
+    // console.log(litersSupplied)
 
     /* One Way X */
     // prices.map((price) => {
@@ -87,20 +92,33 @@ if(archive.prices && archive.spents && archive.supplies) {
 
     // console.log(suppliesDates)
  
-    //litersSupplied is an array of Object that contains Liters paid per Day
-    // litersSupplied.map(function(values) {
-    //     return console.log(values);
+    // litersSupplied is an array of Object that contains Liters paid per Day
+    // litersSupplied.map((value) => {
+    //     console.log(value);
     // });
+
+
+    
+    // secondlitersSupplied.map((values) => {
+    //     console.log(values);
+    // })
+    
+    let litersWasted = [];
 
     spents.forEach(spent => {
         litersSupplied.forEach(literSuplied => {
-
             if(spent.date === literSuplied.date) {
                 // let litersRounded = Math.round(liters * 100) / 100;
                 let dateDrove = spent.date;
-
+                let gasWasted = Math.round( (spent.value / literSuplied.value) * 100 / 100);
+                litersWasted.push({
+                    date: dateDrove,
+                    value: gasWasted
+                })
             }
         })
     });
+
+    console.log(litersWasted);
 }
 
