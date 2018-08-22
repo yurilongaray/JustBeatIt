@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var archive_1 = require("./archive");
 //Todos os arquivos:
-// const archive = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json','/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
-var archive = new archive_1.default('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
+var archive = new archive_1.default('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
+// const archive = new Archive('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 if (archive.prices && archive.spents && archive.supplies) {
     var prices_1 = archive.prices; //array com as datas de alteração do preço do combustível.
-    var spents = archive.spents; //array com datas e uso do veículo em quilômetros (quilometragem percorrida no dia).
+    var spents_1 = archive.spents; //array com datas e uso do veículo em quilômetros (quilometragem percorrida no dia).
     var supplies = archive.supplies; //array com datas e abastecimentos do veículo em reais (não em litros).
     console.log('Existem dados');
     var suppliesDates = supplies.map(function (supplyDate) {
@@ -15,6 +15,7 @@ if (archive.prices && archive.spents && archive.supplies) {
     var pricesDates = supplies.map(function (priceDate) {
         return priceDate.date;
     });
+    ///////////////////////////////////
     /* Average Liter Price per Day */
     var totalDayPrice_1 = 0;
     var countX_1 = 0;
@@ -25,10 +26,11 @@ if (archive.prices && archive.spents && archive.supplies) {
         return countX_1++;
     });
     //Average Result:
-    var averageGas = totalDayPrice_1 / countX_1;
-    console.log('Average per Day: ' + averageGas);
+    var averageGas_1 = totalDayPrice_1 / countX_1;
+    // console.log('Average per Day: ' + averageGas);
     /* Liters Suplied per Day */
     var litersSupplied_1 = [];
+    ////////////////////////////
     /* One Way X */
     supplies.forEach(function (supply) {
         prices_1.forEach(function (price) {
@@ -39,14 +41,40 @@ if (archive.prices && archive.spents && archive.supplies) {
                 return litersSupplied_1.push({ date: dateSuplied, value: liters });
             }
             // else {
-            //     let liters = (supplie.value / averagePricePerDay);
-            //     let dateSuplied = supplie.date;
+            //     const liters = (supplie.value / averagePricePerDay);
+            //     const dateSuplied = supplie.date;
             //     // console.log(litersRounded + ' x ' + dateSuplied);
             //     litersSupplied.push({date: dateSuplied, value: liters});
             // }
         });
     });
-    // console.log(litersSupplied)
+    var test_1 = [];
+    supplies.map(function (value) {
+        return test_1.push({
+            date: value.date,
+            value: ''
+        });
+    });
+    litersSupplied_1.forEach(function (element) {
+        test_1.forEach(function (el) {
+            if (element.date === el.date) {
+                el.value = element.value;
+            }
+        });
+    });
+    supplies.map(function (supply) {
+        test_1.map(function (ts) {
+            if (ts.value === '' && ts.date === supply.date) {
+                var liters = (supply.value / averageGas_1);
+                // console.log(liters + ' x ' + dateSuplied);
+                ts.value = liters;
+            }
+        });
+    });
+    /* Resultado 1 */
+    // test.map((values) => {
+    //     console.log(values)
+    // })
     /* One Way X */
     // prices.map((price) => {
     //     return supplies.filter((supply) => {
@@ -74,18 +102,75 @@ if (archive.prices && archive.spents && archive.supplies) {
     //     console.log(values);
     // })
     var litersWasted_1 = [];
-    spents.forEach(function (spent) {
-        litersSupplied_1.forEach(function (literSuplied) {
-            if (spent.date === literSuplied.date) {
-                // let litersRounded = Math.round(liters * 100) / 100;
-                var dateDrove = spent.date;
-                var gasWasted = Math.round((spent.value / literSuplied.value) * 100 / 100);
+    var etc_1 = [];
+    spents_1.map(function (value) {
+        etc_1.push({
+            date: value.date,
+            value: ''
+        });
+    });
+    spents_1.forEach(function (spent) {
+        test_1.forEach(function (ts) {
+            if (ts.date === spent.date) {
+                var liters = (spent.value / ts.value);
                 litersWasted_1.push({
-                    date: dateDrove,
-                    value: gasWasted
+                    date: ts.date,
+                    value: liters
                 });
             }
         });
     });
-    console.log(litersWasted_1);
+    etc_1.forEach(function (etc) {
+        litersWasted_1.forEach(function (lt) {
+            if (etc.date === lt.date) {
+                etc.value = lt.value;
+            }
+        });
+    });
+    ///////////////////////////////////
+    var totalDay_1 = 0;
+    var countY_1 = 0;
+    var Z = test_1.map(function (spent) {
+        return totalDay_1 += spent.value;
+    });
+    var V = spents_1.map(function (spent) {
+        return countY_1++;
+    });
+    var averageKm_1 = totalDay_1 / countY_1;
+    ///////////////////////////////////
+    etc_1.map(function (etc) {
+        spents_1.map(function (spent) {
+            if (etc.value === '' && etc.date === spent.date) {
+                var liters = (spent.value / averageKm_1);
+                // console.log(liters + ' x ' + dateSuplied);
+                etc.value = liters;
+            }
+        });
+    });
+    etc_1.map(function (value) {
+        console.log(value);
+    });
+    console.log('Average Gas Per Day: ' + averageGas_1);
+    console.log('Average Spent per Day: ' + averageKm_1);
+    // litersWasted.forEach(waste => {
+    //     test.forEach(ts => {
+    //         if(waste.date === ts.date) {
+    //             let liters = 
+    //         }
+    //     });
+    // });
+    // spents.forEach(spent => {
+    //     litersSupplied.forEach(literSuplied => {
+    //         if(spent.date === literSuplied.date) {
+    //             // let litersRounded = Math.round(liters * 100) / 100;
+    //             let dateDrove = spent.date;
+    //             let gasWasted = Math.round( (spent.value / literSuplied.value) * 100 / 100);
+    //             litersWasted.push({
+    //                 date: dateDrove,
+    //                 value: gasWasted
+    //             })
+    //         }
+    //     })
+    // });
+    // console.log(litersWasted);
 }

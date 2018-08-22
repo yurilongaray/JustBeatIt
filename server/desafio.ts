@@ -1,8 +1,8 @@
 import Archive from "./archive";
 
 //Todos os arquivos:
-// const archive = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json','/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
-const archive = new Archive('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
+const archive = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json','/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
+// const archive = new Archive('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 
 if(archive.prices && archive.spents && archive.supplies) {
 
@@ -19,6 +19,7 @@ if(archive.prices && archive.spents && archive.supplies) {
         return priceDate.date;
     });
 
+    ///////////////////////////////////
     /* Average Liter Price per Day */
     let totalDayPrice: number = 0;
     let countX: number = 0;
@@ -33,10 +34,12 @@ if(archive.prices && archive.spents && archive.supplies) {
     
     //Average Result:
     let averageGas = totalDayPrice / countX;
-    console.log('Average per Day: ' + averageGas);
+    // console.log('Average per Day: ' + averageGas);
 
     /* Liters Suplied per Day */
     let litersSupplied = [];
+
+    ////////////////////////////
 
     /* One Way X */
     supplies.forEach(supply => {
@@ -53,8 +56,8 @@ if(archive.prices && archive.spents && archive.supplies) {
             } 
             // else {
 
-            //     let liters = (supplie.value / averagePricePerDay);
-            //     let dateSuplied = supplie.date;
+            //     const liters = (supplie.value / averagePricePerDay);
+            //     const dateSuplied = supplie.date;
             //     // console.log(litersRounded + ' x ' + dateSuplied);
                 
             //     litersSupplied.push({date: dateSuplied, value: liters});
@@ -62,8 +65,38 @@ if(archive.prices && archive.spents && archive.supplies) {
         });
 
     });
+    
+    const test = []
+    
+    supplies.map((value) => {
+        return test.push({ 
+            date: value.date,
+            value: ''
+        });
+    })
 
-    // console.log(litersSupplied)
+    litersSupplied.forEach(element => {
+        test.forEach(el => {
+            if(element.date === el.date) {
+                el.value = element.value;
+            }
+        });
+    });
+
+    supplies.map((supply) => {
+        test.map((ts) => {
+            if(ts.value === '' && ts.date === supply.date) {
+                let liters = (supply.value / averageGas);
+                // console.log(liters + ' x ' + dateSuplied);
+                ts.value = liters;
+            }
+        })
+    })
+    
+    /* Resultado 1 */
+    // test.map((values) => {
+    //     console.log(values)
+    // })
 
     /* One Way X */
     // prices.map((price) => {
@@ -104,21 +137,92 @@ if(archive.prices && archive.spents && archive.supplies) {
     // })
     
     let litersWasted = [];
+    let etc = []
+
+    spents.map((value) => {
+        etc.push({
+            date: value.date,
+            value: ''
+        })
+    })
 
     spents.forEach(spent => {
-        litersSupplied.forEach(literSuplied => {
-            if(spent.date === literSuplied.date) {
-                // let litersRounded = Math.round(liters * 100) / 100;
-                let dateDrove = spent.date;
-                let gasWasted = Math.round( (spent.value / literSuplied.value) * 100 / 100);
+        test.forEach(ts => {
+            if(ts.date === spent.date) {
+                let liters = (spent.value / ts.value);
                 litersWasted.push({
-                    date: dateDrove,
-                    value: gasWasted
+                    date: ts.date,
+                    value: liters
                 })
             }
         })
     });
 
-    console.log(litersWasted);
+    etc.forEach(etc => { 
+        litersWasted.forEach(lt => {
+            if(etc.date === lt.date) {
+                etc.value = lt.value
+            }
+        })
+    })
+
+    ///////////////////////////////////
+    let totalDay: number = 0;
+    let countY: number = 0;
+    
+    const Z = test.map(function(spent) {
+        return totalDay += spent.value;
+    }); 
+
+    const V =  spents.map(function(spent) {
+        return countY ++;
+    }); 
+
+    let averageKm = totalDay / countY;
+
+    ///////////////////////////////////
+
+    etc.map((etc) => {
+        spents.map((spent) => {
+            if(etc.value === '' && etc.date === spent.date) {
+                let liters = (spent.value / averageKm);
+                // console.log(liters + ' x ' + dateSuplied);
+                etc.value = liters;
+            }
+        })
+    })
+
+    etc.map((value) => {
+        console.log(value)
+    })
+
+    console.log('Average Gas Per Day: ' + averageGas);
+    console.log('Average Km per Day: ' + averageKm);
+
+    // litersWasted.forEach(waste => {
+    //     test.forEach(ts => {
+            
+    //         if(waste.date === ts.date) {
+    //             let liters = 
+    //         }
+    //     });
+    // });
+    
+
+    // spents.forEach(spent => {
+    //     litersSupplied.forEach(literSuplied => {
+    //         if(spent.date === literSuplied.date) {
+    //             // let litersRounded = Math.round(liters * 100) / 100;
+    //             let dateDrove = spent.date;
+    //             let gasWasted = Math.round( (spent.value / literSuplied.value) * 100 / 100);
+    //             litersWasted.push({
+    //                 date: dateDrove,
+    //                 value: gasWasted
+    //             })
+    //         }
+    //     })
+    // });
+
+    // console.log(litersWasted);
 }
 
