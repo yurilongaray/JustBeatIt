@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs:any = require('fs');
 
 class Archive {
 

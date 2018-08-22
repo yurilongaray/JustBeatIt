@@ -1,4 +1,5 @@
 import Archive from "./archive";
+import fetch from 'node-fetch';
 
 //Todos os arquivos:
 const archive = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json','/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
@@ -71,7 +72,7 @@ if(archive.prices && archive.spents && archive.supplies) {
     supplies.map((value) => {
         return test.push({ 
             date: value.date,
-            value: ''
+            value: -1
         });
     })
 
@@ -85,7 +86,7 @@ if(archive.prices && archive.spents && archive.supplies) {
 
     supplies.map((supply) => {
         test.map((ts) => {
-            if(ts.value === '' && ts.date === supply.date) {
+            if(ts.value === -1 && ts.date === supply.date) {
                 let liters = (supply.value / averageGas);
                 // console.log(liters + ' x ' + dateSuplied);
                 ts.value = liters;
@@ -142,7 +143,7 @@ if(archive.prices && archive.spents && archive.supplies) {
     spents.map((value) => {
         etc.push({
             date: value.date,
-            value: ''
+            value: -1
         })
     })
 
@@ -161,7 +162,7 @@ if(archive.prices && archive.spents && archive.supplies) {
     etc.forEach(etc => { 
         litersWasted.forEach(lt => {
             if(etc.date === lt.date) {
-                etc.value = lt.value
+                etc.value = parseFloat(lt.value.toFixed(2));
             }
         })
     })
@@ -184,14 +185,15 @@ if(archive.prices && archive.spents && archive.supplies) {
 
     etc.map((etc) => {
         spents.map((spent) => {
-            if(etc.value === '' && etc.date === spent.date) {
+            if(etc.value === -1 && etc.date === spent.date) {
                 let liters = (spent.value / averageKm);
                 // console.log(liters + ' x ' + dateSuplied);
-                etc.value = liters;
+                etc.value = parseFloat(liters.toFixed(2));
             }
         })
     })
 
+    /* Resultado final */
     etc.map((value) => {
         console.log(value)
     })
@@ -224,5 +226,7 @@ if(archive.prices && archive.spents && archive.supplies) {
     // });
 
     // console.log(litersWasted);
+
+    /* Post /check?id=SEU-ID */
 }
 

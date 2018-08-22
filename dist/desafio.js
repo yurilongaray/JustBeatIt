@@ -52,7 +52,7 @@ if (archive.prices && archive.spents && archive.supplies) {
     supplies.map(function (value) {
         return test_1.push({
             date: value.date,
-            value: ''
+            value: -1
         });
     });
     litersSupplied_1.forEach(function (element) {
@@ -64,7 +64,7 @@ if (archive.prices && archive.spents && archive.supplies) {
     });
     supplies.map(function (supply) {
         test_1.map(function (ts) {
-            if (ts.value === '' && ts.date === supply.date) {
+            if (ts.value === -1 && ts.date === supply.date) {
                 var liters = (supply.value / averageGas_1);
                 // console.log(liters + ' x ' + dateSuplied);
                 ts.value = liters;
@@ -106,7 +106,7 @@ if (archive.prices && archive.spents && archive.supplies) {
     spents_1.map(function (value) {
         etc_1.push({
             date: value.date,
-            value: ''
+            value: -1
         });
     });
     spents_1.forEach(function (spent) {
@@ -123,7 +123,7 @@ if (archive.prices && archive.spents && archive.supplies) {
     etc_1.forEach(function (etc) {
         litersWasted_1.forEach(function (lt) {
             if (etc.date === lt.date) {
-                etc.value = lt.value;
+                etc.value = parseFloat(lt.value.toFixed(2));
             }
         });
     });
@@ -140,18 +140,19 @@ if (archive.prices && archive.spents && archive.supplies) {
     ///////////////////////////////////
     etc_1.map(function (etc) {
         spents_1.map(function (spent) {
-            if (etc.value === '' && etc.date === spent.date) {
+            if (etc.value === -1 && etc.date === spent.date) {
                 var liters = (spent.value / averageKm_1);
                 // console.log(liters + ' x ' + dateSuplied);
-                etc.value = liters;
+                etc.value = parseFloat(liters.toFixed(2));
             }
         });
     });
+    /* Resultado final */
     etc_1.map(function (value) {
         console.log(value);
     });
     console.log('Average Gas Per Day: ' + averageGas_1);
-    console.log('Average Spent per Day: ' + averageKm_1);
+    console.log('Average Km per Day: ' + averageKm_1);
     // litersWasted.forEach(waste => {
     //     test.forEach(ts => {
     //         if(waste.date === ts.date) {
@@ -173,4 +174,5 @@ if (archive.prices && archive.spents && archive.supplies) {
     //     })
     // });
     // console.log(litersWasted);
+    /* Post /check?id=SEU-ID */
 }
