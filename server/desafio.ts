@@ -7,30 +7,17 @@ const archive = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/ser
 let prices = archive.prices; //alteração do preço do combustível.
 let spents = archive.spents; //uso do veículo em quilômetros (quilometragem percorrida no dia).
 let supplies = archive.supplies; //bastecimentos do veículo em reais (não em litros).
-let xobj = []
-let yobj = []
+let xobj = [] //Objeto centralizador de informações
+let yobj = [] //Objeto a ser enviado pelo POST
+let countPos = 0;
+let countNeg = 0;
+let count = 0;
 
 if(prices && spents && supplies) {
 
     /* Average Liter Price per Day */
-    let totalDayPrice: number = 0;
-    let countX: number = 0;
+    let averageGasPrice = archive.getAverage(prices);
     
-    prices.map(function(price) {
-        return totalDayPrice += price.value;
-    }); 
-
-    prices.map(function(price) {
-        return countX ++;
-    }); 
-    
-    //Average Result:
-    let averageGasPrice = (totalDayPrice / countX);
-
-    /* /////////////////////////// */
-
-    
-
     /*  
         Applying, into the objX, all the dates present on spents 
         Converting the km on liters by x/12
@@ -52,7 +39,7 @@ if(prices && spents && supplies) {
         })
     })
 
-    // xobj / Price = ( price and average per day)
+    /* xobj / Price = ( price and average per day) */
     prices.forEach(price => {
         xobj.forEach(li => {
             if(price.date === li.date) {
@@ -64,7 +51,7 @@ if(prices && spents && supplies) {
         });
     });
 
-    // xobj / supplies = gas, money supplied and the total km to road
+    /* xobj / supplies = gas, money supplied and the total km to road */
     supplies.forEach(supply => {
         xobj.forEach(li => {
             if(supply.date === li.date) {
@@ -80,14 +67,50 @@ if(prices && spents && supplies) {
         });
     });
 
-    //xobj litersLeft
+    /* xobj litersLeft */
     xobj.map((li) => {
+        let total;
         if(li.litersSupplied > li.litersSpent) {
-            return li.litersLeft = (li.litersSupplied - li.litersSpent)
+            li.litersLeft = (li.litersSupplied - li.litersSpent)
+            countPos += li.litersLeft;
+            total = li.litersSupplied + countPos;
         }
         else if(li.litersSupplied < li.litersSpent) {
-            return li.litersMissed = (li.litersSpent - li.litersSupplied)
+            li.litersMissed = (li.litersSpent - li.litersSupplied)
+            countNeg += li.litersMissed
         }
+    })
+
+    /* Count session */
+    xobj.map((value) => {
+
+        let total;
+        // countLiters = values.litersSupplied - values.litersSpent;
+        if(value.litersLeft > 0 || value.litersMissed > 0) {
+
+            if(value.litersLeft > value.litersMissed) {
+                count += (value.litersLeft - value.litersMissed) 
+                total = value.litersSpent + count;
+            }
+            else if(value.litersLeft < value.litersMissed) {
+                count += (value.litersMissed - value.litersLeft)
+                total = value.litersSpent + count;
+            }
+
+            console.log(count)
+        // } else if(value.litersLeft === 0 && value.litersMissed > 0) {
+            
+        // } else if (value.litersLeft === 0 && value.litersMissed === 0) {
+
+        }
+        // console.log(countLiters)
+
+        // values.totalGasDay 
+        // total = countLiters + values.LitersSupplied
+        // if(values.litersSupplied > 0 && values.litersSpent > 0) {
+        //     total = 
+        // }
+        // values.totalGasDay
     })
 
     /* Passando para o Obj de destino */
@@ -100,16 +123,17 @@ if(prices && spents && supplies) {
     })
 
     /* Debugger */
-    yobj.map((value) => {
+    xobj.map((value) => {
         console.log(value);
         console.log('');
     })
     console.log('AverageGasPrice: ' + averageGasPrice);
+    // console.log(countNeg + ' ' + countPos)
 
     /* Create json.file */
     archive.createJson(xobj);
 
     /* Send POST do destiny */
-    archive.sendPost(yobj);
+    // archive.sendPost(yobj);
 
 }//End If

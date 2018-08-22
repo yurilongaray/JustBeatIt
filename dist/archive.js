@@ -13,7 +13,7 @@ var Archive = /** @class */ (function () {
         fs.writeFile("./server/desafio.json", json, 'utf8', function (err) {
             if (err)
                 throw err;
-            console.log('Created');
+            console.log('Json file Created');
         });
     };
     Archive.prototype.sendPost = function (obj) {
@@ -27,6 +27,15 @@ var Archive = /** @class */ (function () {
         })
             .then(function (res) { return res.json(); })
             .then(function (json) { return console.log(json); });
+    };
+    Archive.prototype.getAverage = function (obj) {
+        var totalDayPrice = 0;
+        var countX = 0;
+        obj.forEach(function (element) {
+            totalDayPrice += element.value;
+            countX++;
+        });
+        return (totalDayPrice / countX);
     };
     return Archive;
 }());

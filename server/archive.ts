@@ -38,8 +38,21 @@ class Archive {
                 body: JSON.stringify(obj),
                 headers: { 'Content-Type': 'application/json' },
             })
-        .then(res => res.json())
-        .then(json => console.log(json));
+            .then(res => res.json())
+            .then(json => console.log(json));
+    }
+
+    getAverage(obj: any) {
+
+        let totalDayPrice: number = 0;
+        let countX: number = 0;
+
+        obj.forEach(element => {
+            totalDayPrice += element.value;
+            countX ++;
+        });
+        
+        return (totalDayPrice / countX);
     }
 }
 

@@ -7,21 +7,14 @@ var archive = new archive_1.default('/home/sofit/Área de Trabalho/DesafioDesafi
 var prices = archive.prices; //alteração do preço do combustível.
 var spents = archive.spents; //uso do veículo em quilômetros (quilometragem percorrida no dia).
 var supplies = archive.supplies; //bastecimentos do veículo em reais (não em litros).
-var xobj = [];
-var yobj = [];
+var xobj = []; //Objeto centralizador de informações
+var yobj = []; //Objeto a ser enviado pelo POST
+var countPos = 0;
+var countNeg = 0;
+var count = 0;
 if (prices && spents && supplies) {
     /* Average Liter Price per Day */
-    var totalDayPrice_1 = 0;
-    var countX_1 = 0;
-    prices.map(function (price) {
-        return totalDayPrice_1 += price.value;
-    });
-    prices.map(function (price) {
-        return countX_1++;
-    });
-    //Average Result:
-    var averageGasPrice_1 = (totalDayPrice_1 / countX_1);
-    /* /////////////////////////// */
+    var averageGasPrice_1 = archive.getAverage(prices);
     /*
         Applying, into the objX, all the dates present on spents
         Converting the km on liters by x/12
@@ -42,7 +35,7 @@ if (prices && spents && supplies) {
             totalGasDay: 0
         });
     });
-    // xobj / Price = ( price and average per day)
+    /* xobj / Price = ( price and average per day) */
     prices.forEach(function (price) {
         xobj.forEach(function (li) {
             if (price.date === li.date) {
@@ -53,7 +46,7 @@ if (prices && spents && supplies) {
             }
         });
     });
-    // xobj / supplies = gas, money supplied and the total km to road
+    /* xobj / supplies = gas, money supplied and the total km to road */
     supplies.forEach(function (supply) {
         xobj.forEach(function (li) {
             if (supply.date === li.date) {
@@ -68,14 +61,41 @@ if (prices && spents && supplies) {
             }
         });
     });
-    //xobj litersLeft
+    /* xobj litersLeft */
     xobj.map(function (li) {
         if (li.litersSupplied > li.litersSpent) {
-            return li.litersLeft = (li.litersSupplied - li.litersSpent);
+            li.litersLeft = (li.litersSupplied - li.litersSpent);
+            // countPos += li.litersLeft;
         }
         else if (li.litersSupplied < li.litersSpent) {
-            return li.litersMissed = (li.litersSpent - li.litersSupplied);
+            li.litersMissed = (li.litersSpent - li.litersSupplied);
+            // countNeg += li.litersMissed
         }
+    });
+    /* Count session */
+    xobj.map(function (value) {
+        var total;
+        // countLiters = values.litersSupplied - values.litersSpent;
+        if (value.litersLeft > 0 || value.litersMissed > 0) {
+            if (value.litersLeft > value.litersMissed) {
+                count += (value.litersLeft - value.litersMissed);
+                total = value.litersSpent + count;
+            }
+            else if (value.litersLeft < value.litersMissed) {
+                count += (value.litersMissed - value.litersLeft);
+                total = value.litersSpent + count;
+            }
+            console.log(count);
+            // } else if(value.litersLeft === 0 && value.litersMissed > 0) {
+            // } else if (value.litersLeft === 0 && value.litersMissed === 0) {
+        }
+        // console.log(countLiters)
+        // values.totalGasDay 
+        // total = countLiters + values.LitersSupplied
+        // if(values.litersSupplied > 0 && values.litersSpent > 0) {
+        //     total = 
+        // }
+        // values.totalGasDay
     });
     /* Passando para o Obj de destino */
     xobj.map(function (values) {
@@ -86,13 +106,14 @@ if (prices && spents && supplies) {
         });
     });
     /* Debugger */
-    yobj.map(function (value) {
+    xobj.map(function (value) {
         console.log(value);
         console.log('');
     });
     console.log('AverageGasPrice: ' + averageGasPrice_1);
+    // console.log(countNeg + ' ' + countPos)
     /* Create json.file */
     archive.createJson(xobj);
     /* Send POST do destiny */
-    archive.sendPost(yobj);
+    // archive.sendPost(yobj);
 } //End If
