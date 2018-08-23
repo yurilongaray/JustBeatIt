@@ -47,7 +47,7 @@ class Archive {
     getAverage(obj: any) {
 
         let totalDayPrice: number = 0;
-        let countX: number = 0;
+        let countX: number  = 0;
 
         obj.forEach(element => {
             totalDayPrice += element.value;
@@ -55,6 +55,36 @@ class Archive {
         });
         
         return (totalDayPrice / countX);
+    }
+
+    getDateArray(start, end) {
+
+        let arr: any = new Array();
+        let dt: any = new Date(start);
+
+        while (dt <= end) { 
+            
+            arr.push({
+                date: this.formatDate(dt)
+            });
+            dt.setDate(dt.getDate() + 1);
+        }
+
+        return arr;
+    }
+
+    formatDate(data) {
+
+        let dt = new Date(data);
+        let mes = '' + (dt.getMonth() + 1);
+        let dia = '' + dt.getDate();
+        let ano = dt.getFullYear();
+
+
+        if (mes.length < 2) mes = '0' + mes;
+        if (dia.length < 2) dia = '0' + dia;
+
+        return [dia, mes, ano].join('/');
     }
 }
 

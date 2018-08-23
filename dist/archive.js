@@ -38,6 +38,28 @@ var Archive = /** @class */ (function () {
         });
         return (totalDayPrice / countX);
     };
+    Archive.prototype.getDateArray = function (start, end) {
+        var arr = new Array();
+        var dt = new Date(start);
+        while (dt <= end) {
+            arr.push({
+                date: this.formatDate(dt)
+            });
+            dt.setDate(dt.getDate() + 1);
+        }
+        return arr;
+    };
+    Archive.prototype.formatDate = function (data) {
+        var dt = new Date(data);
+        var mes = '' + (dt.getMonth() + 1);
+        var dia = '' + dt.getDate();
+        var ano = dt.getFullYear();
+        if (mes.length < 2)
+            mes = '0' + mes;
+        if (dia.length < 2)
+            dia = '0' + dia;
+        return [dia, mes, ano].join('/');
+    };
     return Archive;
 }());
 exports.default = Archive;

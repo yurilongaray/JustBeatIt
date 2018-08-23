@@ -9,76 +9,75 @@ var spents = archive.spents; //uso do veículo em quilômetros (quilometragem pe
 var supplies = archive.supplies; //bastecimentos do veículo em reais (não em litros).
 var xobj = []; //Objeto centralizador de informações
 var yobj = []; //Objeto a ser enviado pelo POST
-var count = 0; //Not used yet
 if (prices && spents && supplies) {
-    /* Average Liter Price per Day */
-    var averageGasPrice_1 = archive.getAverage(prices);
-    /*
-        Applying, into the objX, all the dates present on spents
-        Converting the km on liters by x/12
-        Creating the other props
-    */
-    spents.map(function (spent) {
-        var litersSpent = (spent.value / 12);
+    var startDate = new Date("2017-01-22"); //21-01-2017 
+    var endDate = new Date("2018-07-28"); //26-07-2018
+    var dates = archive.getDateArray(startDate, endDate);
+    /* Adding all the dates */
+    dates.map(function (value) {
         xobj.push({
-            date: spent.date,
-            kmSpent: spent.value,
-            litersSpent: litersSpent,
-            gasPrice: 0,
-            litersSupplied: 0,
-            kmToRoad: 0,
-            // litersRemain: 0,
-            // litersMissing: 0,
-            yesterdayGasRemain: 0,
+            date: value.date,
+            spentLiters: 0,
+            suppliedLiters: 0,
+            priceGas: 0,
+            supplyTillHere: 0,
+            spentTillHere: 0,
+            // yesterdayGasRemain: 0,
             presentGas: 0
         });
     });
-    /* xobj / Price = ( price and average per day) */
-    prices.forEach(function (price) {
-        xobj.forEach(function (li) {
-            if (price.date === li.date) {
-                li.gasPrice = price.value;
-            }
-            else if (price.date !== li.date && li.gasPrice === 0) {
-                li.gasPrice = averageGasPrice_1;
+    /* Adding spentLiters */
+    xobj.forEach(function (obj) {
+        spents.forEach(function (spent) {
+            if (obj.date === spent.date) {
+                obj.spentLiters = (spent.value / 12);
             }
         });
     });
-    /* xobj / supplies = gas, money supplied and the total km to road */
-    supplies.forEach(function (supply) {
-        xobj.forEach(function (li) {
-            if (supply.date === li.date) {
-                li.litersSupplied = (supply.value / li.gasPrice);
-                li.kmToRoad = (li.litersSupplied * 12);
-            }
-            else if ((supply.date !== li.date) && (li.gasSupplied === 0)) {
-                li.litersSupplied = 'x';
-                li.gasPrice = 'x';
-                li.kmToRoad = 'x';
+    /* Adding prices for Gas */
+    xobj.forEach(function (obj) {
+        prices.forEach(function (price) {
+            if (obj.date === price.date) {
+                obj.priceGas = price.value;
             }
         });
     });
-    /* xobj litersRemain, litersMissing  */
-    // xobj.map((li) => {
-    //     let total;
-    //     if(li.litersSupplied > li.litersSpent) {
-    //         li.litersRemain = (li.litersSupplied - li.litersSpent)
-    //     }
-    //     else if(li.litersSupplied < li.litersSpent) {
-    //         li.litersMissing = (li.litersSpent - li.litersSupplied)
-    //     }
-    // })
-    /* Count session */
+    /* Getting priceGas validity */
     for (var i = 0; i < xobj.length; i++) {
-        if (xobj[i - 1] === undefined) {
-            xobj[i].yesterdayGasRemain = 0;
-            xobj[i].presentgas = xobj[i].litersSupplied;
-        }
-        else {
-            xobj[i].yesterdayGasRemain = xobj[i - 1].litersSupplied - xobj[i - 1].litersSpent;
-            xobj[i].presentGas = xobj[i].litersSupplied + xobj[i].yesterdayGasRemain;
+        if (xobj[i - 1] !== undefined) {
+            if (xobj[i].priceGas === 0) {
+                xobj[i].priceGas = xobj[i - 1].priceGas;
+            }
         }
     }
+    /* Adding suppliedLiters */
+    xobj.forEach(function (obj) {
+        supplies.forEach(function (supply) {
+            if (obj.date === supply.date) {
+                obj.suppliedLiters = (supply.value / obj.priceGas);
+            }
+        });
+    });
+    /* Count session */
+    for (var i = 0; i < xobj.length; i++) {
+        if (xobj[i - 1] !== undefined) {
+            xobj[i].supplyTillHere = xobj[i - 1].supplyTillHere + xobj[i - 1].suppliedLiters;
+            xobj[i].spentTillHere = xobj[i - 1].spentTillHere + xobj[i - 1].spentLiters;
+        }
+        else {
+            xobj[i].supplyTillHere = xobj[i].suppliedLiters;
+            xobj[i].spentTillHere = xobj[i].spentLiters;
+        }
+    }
+    /* Getting the disponible Gas */
+    xobj.map(function (x) {
+        x.presentGas = x.supplyTillHere - x.spentTillHere;
+    });
+    /* Debugger */
+    xobj.map(function (value) {
+        // console.log(value.date + ' ' + value.priceGas);
+        console.log(value);
+    });
     /* Creating the object destiny to POST */
     xobj.map(function (values) {
         // let result:number = parseFloat(((values.litersRemain !== 0) ? values.litersRemain : values.litersMissing).toFixed(2));
@@ -88,14 +87,8 @@ if (prices && spents && supplies) {
             value: result
         });
     });
-    /* Debugger */
-    xobj.map(function (value) {
-        console.log(value);
-        console.log('');
-    });
-    console.log('AverageGasPrice: ' + averageGasPrice_1);
     /* Create json.file */
     archive.createJson(xobj);
     /* Send POST do destiny */
-    // archive.sendPost(yobj);
-} //End If
+    archive.sendPost(yobj);
+}

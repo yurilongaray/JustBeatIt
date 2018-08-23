@@ -4,104 +4,110 @@ import Archive from "./archive";
 const archive: any = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json','/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 // const archive = new Archive('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 
-let prices: any = archive.prices; //alteração do preço do combustível.
-let spents: any = archive.spents; //uso do veículo em quilômetros (quilometragem percorrida no dia).
-let supplies: any = archive.supplies; //bastecimentos do veículo em reais (não em litros).
-let xobj: any = [] //Objeto centralizador de informações
-let yobj: any = [] //Objeto a ser enviado pelo POST
-let count: number = 0;//Not used yet
+let prices: any     = archive.prices; //alteração do preço do combustível.
+let spents: any     = archive.spents; //uso do veículo em quilômetros (quilometragem percorrida no dia).
+let supplies: any   = archive.supplies; //bastecimentos do veículo em reais (não em litros).
+let xobj: any       = [] //Objeto centralizador de informações
+let yobj: any       = [] //Objeto a ser enviado pelo POST
 
 if(prices && spents && supplies) {
 
-    /* Average Liter Price per Day */
-    let averageGasPrice: number = archive.getAverage(prices);
-    
-    /*  
-        Applying, into the objX, all the dates present on spents 
-        Converting the km on liters by x/12
-        Creating the other props 
-    */
-    spents.map((spent) => {
+    let startDate   = new Date("2017-01-22"); //21-01-2017 
+    let endDate     = new Date("2018-07-28"); //26-07-2018
+    let dates       = archive.getDateArray(startDate, endDate);
 
-        let litersSpent: number = (spent.value / 12)
+    /* Adding all the dates */
+    dates.map((value) => {
 
         xobj.push({
-            date: spent.date,
-            kmSpent: spent.value,
-            litersSpent: litersSpent,
-            gasPrice: 0,
-            litersSupplied: 0,
-            kmToRoad: 0,
-            // litersRemain: 0,
-            // litersMissing: 0,
-            yesterdayGasRemain: 0,
+            date: value.date,
+            spentLiters: 0,
+            suppliedLiters: 0,
+            priceGas: 0,
+            supplyTillHere: 0,
+            spentTillHere: 0,
+            // yesterdayGasRemain: 0,
             presentGas: 0
         })
     })
 
-    /* xobj / Price = ( price and average per day) */
-    prices.forEach(price => {
-
-        xobj.forEach(li => {
-            
-            if(price.date === li.date) {
-                li.gasPrice = price.value
-            } 
-
-            else if(price.date !== li.date && li.gasPrice === 0 ) {
-                li.gasPrice = averageGasPrice;
-            }
-
-        });
-    });
-
-    /* xobj / supplies = gas, money supplied and the total km to road */
-    supplies.forEach(supply => {
-
-        xobj.forEach(li => {
-
-            if(supply.date === li.date) {
-                li.litersSupplied = (supply.value / li.gasPrice);
-                li.kmToRoad = (li.litersSupplied * 12);
-            } 
-
-            else if( (supply.date !== li.date) && (li.gasSupplied === 0) ) {
-                li.litersSupplied = 'x';
-                li.gasPrice = 'x';
-                li.kmToRoad = 'x';
-            }
-
-        });
-    });
-
-    /* xobj litersRemain, litersMissing  */
-    // xobj.map((li) => {
-
-    //     let total;
-    //     if(li.litersSupplied > li.litersSpent) {
-    //         li.litersRemain = (li.litersSupplied - li.litersSpent)
-    //     }
-
-    //     else if(li.litersSupplied < li.litersSpent) {
-    //         li.litersMissing = (li.litersSpent - li.litersSupplied)
-    //     }
-
-    // })
-
-    /* Count session */
-    for (let i: number = 0; i < xobj.length; i++) {
-
-        if(xobj[i - 1] === undefined) {
-            xobj[i].yesterdayGasRemain = 0;
-            xobj[i].presentgas = xobj[i].litersSupplied;
-        } 
+    /* Adding spentLiters */
+    xobj.forEach(obj => {
         
-        else {
-            xobj[i].yesterdayGasRemain = xobj[i - 1].litersSupplied - xobj[i - 1].litersSpent;
-            xobj[i].presentGas = xobj[i].litersSupplied + xobj[i].yesterdayGasRemain;
+        spents.forEach(spent => {
+            
+            if(obj.date === spent.date) {
+
+                obj.spentLiters = (spent.value / 12);
+            }
+        });
+    });
+
+    /* Adding prices for Gas */
+    xobj.forEach(obj => {
+        
+        prices.forEach(price => {
+            
+            if(obj.date === price.date) {
+
+                obj.priceGas = price.value;
+            }
+        });
+    });
+
+    /* Getting priceGas validity */
+    for(let i = 0; i < xobj.length; i++) {
+
+        if(xobj[i - 1] !== undefined) {
+
+            if(xobj[i].priceGas === 0) {
+
+                xobj[i].priceGas = xobj[i - 1].priceGas
+            }
         }
     }
-    
+
+    /* Adding suppliedLiters */
+    xobj.forEach(obj => {
+        
+        supplies.forEach(supply => {
+            
+            if(obj.date === supply.date) {
+
+                obj.suppliedLiters = (supply.value / obj.priceGas);
+            }
+        });
+    });
+
+    /* Count session */
+    for(let i = 0; i < xobj.length; i++) {
+        
+        if(xobj[i - 1] !== undefined) {
+
+            xobj[i].supplyTillHere = xobj[i - 1].supplyTillHere + xobj[i - 1].suppliedLiters;
+            xobj[i].spentTillHere = xobj[i - 1].spentTillHere + xobj[i - 1].spentLiters;
+
+        } else {
+
+            xobj[i].supplyTillHere = xobj[i].suppliedLiters;
+            xobj[i].spentTillHere    = xobj[i].spentLiters;
+        }
+    }
+
+    /* Getting the disponible Gas */
+    xobj.map((x) => {
+        x.presentGas = x.supplyTillHere - x.spentTillHere;
+    })
+
+
+    /* Debugger */
+    xobj.map((value) => {
+
+        // console.log(value.date + ' ' + value.priceGas);
+        console.log(value)
+        
+    })
+
     /* Creating the object destiny to POST */
     xobj.map((values) => {
 
@@ -115,21 +121,10 @@ if(prices && spents && supplies) {
 
     })
 
-    /* Debugger */
-    xobj.map((value) => {
-
-        console.log(value);
-        console.log('');
-
-        
-    })
-
-    console.log('AverageGasPrice: ' + averageGasPrice);
-
     /* Create json.file */
     archive.createJson(xobj);
 
     /* Send POST do destiny */
     // archive.sendPost(yobj);
 
-}//End If
+}
