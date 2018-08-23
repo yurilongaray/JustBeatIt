@@ -3,6 +3,8 @@ Origin: https://challenge-for-adventurers.herokuapp.com
 
 https://challenge-for-adventurers.herokuapp.com/start/yurilongaray@hotmail.com
 
+https://challenge-for-adventurers.herokuapp.com/progress/5b7c0c20cf8c8200147dcdc5
+
 ID 5b7c0c20cf8c8200147dcdc5. Ele será usado em todo o desafio que se seguirá.
 
 Objetivo: Calcular o saldo do tanque de combustível de um veículo levando em consideração os abastecimentos e viagens para cada dia de um período. Ou seja, você terá que descobrir quanto combustível havia no tanque do veículo em cada dia. 

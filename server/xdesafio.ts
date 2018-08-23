@@ -120,7 +120,6 @@ if(prices && spents && supplies) {
 
         console.log(value);
         console.log('');
-
         
     })
 

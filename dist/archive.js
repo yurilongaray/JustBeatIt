@@ -29,15 +29,6 @@ var Archive = /** @class */ (function () {
             .then(function (res) { return res.json(); })
             .then(function (json) { return console.log(json); });
     };
-    Archive.prototype.getAverage = function (obj) {
-        var totalDayPrice = 0;
-        var countX = 0;
-        obj.forEach(function (element) {
-            totalDayPrice += element.value;
-            countX++;
-        });
-        return (totalDayPrice / countX);
-    };
     Archive.prototype.getDateArray = function (start, end) {
         var arr = new Array();
         var dt = new Date(start);
@@ -49,8 +40,8 @@ var Archive = /** @class */ (function () {
         }
         return arr;
     };
-    Archive.prototype.formatDate = function (data) {
-        var dt = new Date(data);
+    Archive.prototype.formatDate = function (date) {
+        var dt = new Date(date);
         var mes = '' + (dt.getMonth() + 1);
         var dia = '' + dt.getDate();
         var ano = dt.getFullYear();

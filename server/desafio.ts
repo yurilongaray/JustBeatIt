@@ -24,9 +24,7 @@ if(prices && spents && supplies) {
             spentLiters: 0,
             suppliedLiters: 0,
             priceGas: 0,
-            supplyTillHere: 0,
-            spentTillHere: 0,
-            // yesterdayGasRemain: 0,
+            yesterdayGasRemain: 0,
             presentGas: 0
         })
     })
@@ -62,7 +60,7 @@ if(prices && spents && supplies) {
 
             if(xobj[i].priceGas === 0) {
 
-                xobj[i].priceGas = xobj[i - 1].priceGas
+                xobj[i].priceGas = xobj[i-1].priceGas;
             }
         }
     }
@@ -82,43 +80,38 @@ if(prices && spents && supplies) {
     /* Count session */
     for(let i = 0; i < xobj.length; i++) {
         
-        if(xobj[i - 1] !== undefined) {
+        
+        if(xobj[i-1] !== undefined) {
 
-            xobj[i].supplyTillHere = xobj[i - 1].supplyTillHere + xobj[i - 1].suppliedLiters;
-            xobj[i].spentTillHere = xobj[i - 1].spentTillHere + xobj[i - 1].spentLiters;
-
+            xobj[i].yesterdayGasRemain = xobj[i-1].suppliedLiters - xobj[i-1].spentLiters + xobj[i-1].yesterdayGasRemain;
         } else {
 
-            xobj[i].supplyTillHere = xobj[i].suppliedLiters;
-            xobj[i].spentTillHere    = xobj[i].spentLiters;
+            xobj[i].yesterdayGasRemain = xobj[i].suppliedLiters - xobj[i].spentLiters;
         }
     }
 
     /* Getting the disponible Gas */
-    xobj.map((x) => {
-        x.presentGas = x.supplyTillHere - x.spentTillHere;
-    })
-
+    for (let i = 0; i < xobj.length; i++) {
+        
+        xobj[i].presentGas = xobj[i].yesterdayGasRemain + xobj[i].suppliedLiters - xobj[i].spentLiters;
+    }
 
     /* Debugger */
     xobj.map((value) => {
 
-        // console.log(value.date + ' ' + value.priceGas);
-        console.log(value)
-        
+        // let teste = archive.formatNumber(value.presentGas, 2)
+        console.log(value.date);
     })
 
     /* Creating the object destiny to POST */
-    xobj.map((values) => {
+    xobj.map((value) => {
 
-        // let result:number = parseFloat(((values.litersRemain !== 0) ? values.litersRemain : values.litersMissing).toFixed(2));
-        let result: number = parseFloat(values.presentGas.toFixed(2));
+        let result: number = parseFloat(value.presentGas.toFixed(2));
 
         yobj.push({
-            date: values.date,
+            date: value.date,
             value: result
         })
-
     })
 
     /* Create json.file */

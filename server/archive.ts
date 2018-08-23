@@ -14,7 +14,7 @@ class Archive {
         this.supplies   = JSON.parse(fs.readFileSync(dirSupplies, 'utf8'));
     }
 
-    createJson(obj: Object) {
+    public createJson(obj: Object) {
         
         const json = JSON.stringify(obj);
 
@@ -27,7 +27,7 @@ class Archive {
         });
     }
 
-    sendPost(obj: Object) {
+    public sendPost(obj: Object) {
 
         const url   = 'https://challenge-for-adventurers.herokuapp.com';
         const id    = '5b7c0c20cf8c8200147dcdc5';
@@ -44,26 +44,13 @@ class Archive {
             .then(json => console.log(json));
     }
 
-    getAverage(obj: any) {
-
-        let totalDayPrice: number = 0;
-        let countX: number  = 0;
-
-        obj.forEach(element => {
-            totalDayPrice += element.value;
-            countX ++;
-        });
-        
-        return (totalDayPrice / countX);
-    }
-
-    getDateArray(start, end) {
+    public getDateArray(start: any, end: any) {
 
         let arr: any = new Array();
         let dt: any = new Date(start);
 
         while (dt <= end) { 
-            
+
             arr.push({
                 date: this.formatDate(dt)
             });
@@ -73,9 +60,9 @@ class Archive {
         return arr;
     }
 
-    formatDate(data) {
+    public formatDate(date: any) {
 
-        let dt = new Date(data);
+        let dt = new Date(date);
         let mes = '' + (dt.getMonth() + 1);
         let dia = '' + dt.getDate();
         let ano = dt.getFullYear();
@@ -86,6 +73,12 @@ class Archive {
 
         return [dia, mes, ano].join('/');
     }
+
+    // public formatNumber(number: number, decimals: number) { 
+
+    //     var aux = Math.pow(10, decimals)
+    //     return Math.floor(number * aux)/aux
+    // }
 }
 
 export default Archive;
