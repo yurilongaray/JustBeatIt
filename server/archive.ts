@@ -9,9 +9,9 @@ class Archive {
     
     constructor(dirPrices: string, dirSpents: string, dirSupplies: string) {
 
-        this.prices = JSON.parse(fs.readFileSync(dirPrices, 'utf8'));
-        this.spents = JSON.parse(fs.readFileSync(dirSpents, 'utf8'));
-        this.supplies = JSON.parse(fs.readFileSync(dirSupplies, 'utf8'));
+        this.prices     = JSON.parse(fs.readFileSync(dirPrices, 'utf8'));
+        this.spents     = JSON.parse(fs.readFileSync(dirSpents, 'utf8'));
+        this.supplies   = JSON.parse(fs.readFileSync(dirSupplies, 'utf8'));
     }
 
     createJson(obj: Object) {
@@ -19,16 +19,18 @@ class Archive {
         const json = JSON.stringify(obj);
 
         fs.writeFile("./server/desafio.json", json, 'utf8', function (err) {
-            if (err) throw err;
-            console.log('Json file Created');
+            if (err) {
+                throw err;
             }
-        );
+            
+            console.log('Json file Created');
+        });
     }
 
     sendPost(obj: Object) {
 
-        const url = 'https://challenge-for-adventurers.herokuapp.com';
-        const id = '5b7c0c20cf8c8200147dcdc5';
+        const url   = 'https://challenge-for-adventurers.herokuapp.com';
+        const id    = '5b7c0c20cf8c8200147dcdc5';
         
         console.log(`Iniciando POST para: ${url}/check?${id}`)
 

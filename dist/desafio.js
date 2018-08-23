@@ -79,7 +79,7 @@ if (prices && spents && supplies) {
             xobj[i].presentGas = xobj[i].litersSupplied + xobj[i].yesterdayGasRemain;
         }
     }
-    /* Passando para o Obj de destino */
+    /* Creating the object destiny to POST */
     xobj.map(function (values) {
         // let result:number = parseFloat(((values.litersRemain !== 0) ? values.litersRemain : values.litersMissing).toFixed(2));
         var result = parseFloat(values.presentGas.toFixed(2));
@@ -97,5 +97,5 @@ if (prices && spents && supplies) {
     /* Create json.file */
     archive.createJson(xobj);
     /* Send POST do destiny */
-    archive.sendPost(yobj);
+    // archive.sendPost(yobj);
 } //End If

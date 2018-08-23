@@ -9,7 +9,7 @@ let spents: any = archive.spents; //uso do veículo em quilômetros (quilometrag
 let supplies: any = archive.supplies; //bastecimentos do veículo em reais (não em litros).
 let xobj: any = [] //Objeto centralizador de informações
 let yobj: any = [] //Objeto a ser enviado pelo POST
-let count = 0;//Not used yet
+let count: number = 0;//Not used yet
 
 if(prices && spents && supplies) {
 
@@ -26,7 +26,6 @@ if(prices && spents && supplies) {
         let litersSpent: number = (spent.value / 12)
 
         xobj.push({
-
             date: spent.date,
             kmSpent: spent.value,
             litersSpent: litersSpent,
@@ -103,7 +102,7 @@ if(prices && spents && supplies) {
         }
     }
     
-    /* Passando para o Obj de destino */
+    /* Creating the object destiny to POST */
     xobj.map((values) => {
 
         // let result:number = parseFloat(((values.litersRemain !== 0) ? values.litersRemain : values.litersMissing).toFixed(2));
@@ -131,6 +130,6 @@ if(prices && spents && supplies) {
     archive.createJson(xobj);
 
     /* Send POST do destiny */
-    archive.sendPost(yobj);
+    // archive.sendPost(yobj);
 
 }//End If

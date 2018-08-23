@@ -11,8 +11,9 @@ var Archive = /** @class */ (function () {
     Archive.prototype.createJson = function (obj) {
         var json = JSON.stringify(obj);
         fs.writeFile("./server/desafio.json", json, 'utf8', function (err) {
-            if (err)
+            if (err) {
                 throw err;
+            }
             console.log('Json file Created');
         });
     };
