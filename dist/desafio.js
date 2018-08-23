@@ -17,10 +17,9 @@ if (prices && spents && supplies) {
     dates.map(function (value) {
         xobj.push({
             date: value.date,
-            spentLiters: 0,
             suppliedLiters: 0,
+            spentLiters: 0,
             priceGas: 0,
-            yesterdayGasRemain: 0,
             presentGas: 0
         });
     });
@@ -56,23 +55,16 @@ if (prices && spents && supplies) {
             }
         });
     });
-    /* Count session */
-    for (var i = 0; i < xobj.length; i++) {
+    /* Total */
+    for (var i = 0; i <= xobj.length; i++) {
         if (xobj[i - 1] !== undefined) {
-            xobj[i].yesterdayGasRemain = xobj[i - 1].suppliedLiters - xobj[i - 1].spentLiters + xobj[i - 1].yesterdayGasRemain;
+            xobj[i].presentGas = (xobj[i].suppliedLiters - xobj[i].spentLiters) + (xobj[i - 1].presentGas);
         }
-        else {
-            xobj[i].yesterdayGasRemain = xobj[i].suppliedLiters - xobj[i].spentLiters;
-        }
-    }
-    /* Getting the disponible Gas */
-    for (var i = 0; i < xobj.length; i++) {
-        xobj[i].presentGas = xobj[i].yesterdayGasRemain + xobj[i].suppliedLiters - xobj[i].spentLiters;
     }
     /* Debugger */
     xobj.map(function (value) {
         // let teste = archive.formatNumber(value.presentGas, 2)
-        console.log(value.date);
+        console.log(value.presentGas);
     });
     /* Creating the object destiny to POST */
     xobj.map(function (value) {

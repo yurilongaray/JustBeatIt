@@ -9,9 +9,9 @@ class Archive {
     
     constructor(dirPrices: string, dirSpents: string, dirSupplies: string) {
 
-        this.prices     = JSON.parse(fs.readFileSync(dirPrices, 'utf8'));
-        this.spents     = JSON.parse(fs.readFileSync(dirSpents, 'utf8'));
-        this.supplies   = JSON.parse(fs.readFileSync(dirSupplies, 'utf8'));
+        this.prices   = JSON.parse(fs.readFileSync(dirPrices, 'utf8'));
+        this.spents   = JSON.parse(fs.readFileSync(dirSpents, 'utf8'));
+        this.supplies = JSON.parse(fs.readFileSync(dirSupplies, 'utf8'));
     }
 
     public createJson(obj: Object) {
@@ -29,8 +29,8 @@ class Archive {
 
     public sendPost(obj: Object) {
 
-        const url   = 'https://challenge-for-adventurers.herokuapp.com';
-        const id    = '5b7c0c20cf8c8200147dcdc5';
+        const url = 'https://challenge-for-adventurers.herokuapp.com';
+        const id  = '5b7c0c20cf8c8200147dcdc5';
         
         console.log(`Iniciando POST para: ${url}/check?${id}`)
 
@@ -47,7 +47,7 @@ class Archive {
     public getDateArray(start: any, end: any) {
 
         let arr: any = new Array();
-        let dt: any = new Date(start);
+        let dt: any  = new Date(start);
 
         while (dt <= end) { 
 
@@ -74,11 +74,12 @@ class Archive {
         return [dia, mes, ano].join('/');
     }
 
-    // public formatNumber(number: number, decimals: number) { 
+    public formatNumber(number: number, decimals: number) { 
 
-    //     var aux = Math.pow(10, decimals)
-    //     return Math.floor(number * aux)/aux
-    // }
+        var aux = Math.pow(10, decimals)
+        
+        return Math.floor(number * aux)/aux
+    }
 }
 
 export default Archive;

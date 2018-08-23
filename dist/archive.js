@@ -51,6 +51,10 @@ var Archive = /** @class */ (function () {
             dia = '0' + dia;
         return [dia, mes, ano].join('/');
     };
+    Archive.prototype.formatNumber = function (number, decimals) {
+        var aux = Math.pow(10, decimals);
+        return Math.floor(number * aux) / aux;
+    };
     return Archive;
 }());
 exports.default = Archive;
