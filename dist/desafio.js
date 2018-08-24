@@ -27,8 +27,9 @@ if (prices && spents && supplies) {
     xobj.forEach(function (obj) {
         spents.forEach(function (spent) {
             if (obj.date === spent.date) {
-                obj.spentLiters = (spent.value / 12);
+                obj.spentLiters = parseFloat((spent.value / 12).toFixed(2));
             }
+            ;
         });
     });
     /* Adding prices for Gas */
@@ -37,33 +38,33 @@ if (prices && spents && supplies) {
             if (obj.date === price.date) {
                 obj.priceGas = price.value;
             }
+            ;
         });
     });
     /* Getting priceGas validity */
     for (var i = 0; i < xobj.length; i++) {
-        if (xobj[i - 1] !== undefined) {
-            if (xobj[i].priceGas === 0) {
-                xobj[i].priceGas = xobj[i - 1].priceGas;
-            }
+        if (xobj[i].priceGas === 0) {
+            xobj[i].priceGas = xobj[i - 1].priceGas;
         }
+        ;
     }
+    ;
     /* Adding suppliedLiters */
     xobj.forEach(function (obj) {
         supplies.forEach(function (supply) {
             if (obj.date === supply.date) {
-                obj.suppliedLiters = (supply.value / obj.priceGas);
+                obj.suppliedLiters = parseFloat((supply.value / obj.priceGas).toFixed(2));
             }
+            ;
         });
     });
     /* Total */
-    for (var i = 0; i <= xobj.length; i++) {
-        if (xobj[i - 1] !== undefined) {
-            xobj[i].presentGas = (xobj[i].suppliedLiters - xobj[i].spentLiters) + (xobj[i - 1].presentGas);
-        }
+    for (var i = 1; i < xobj.length; i++) {
+        xobj[i].presentGas = (xobj[i].suppliedLiters - xobj[i].spentLiters) + (xobj[i - 1].presentGas);
     }
+    ;
     /* Debugger */
     xobj.map(function (value) {
-        // let teste = archive.formatNumber(value.presentGas, 2)
         console.log(value.presentGas);
     });
     /* Creating the object destiny to POST */

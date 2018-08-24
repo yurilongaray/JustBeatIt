@@ -10,7 +10,7 @@ let supplies: any = archive.supplies; //bastecimentos do veículo em reais (não
 let xobj: any     = [] //Objeto centralizador de informações
 let yobj: any     = [] //Objeto a ser enviado pelo POST
 
-if(prices && spents && supplies) {
+if (prices && spents && supplies) {
 
     let startDate = new Date("2017-01-22"); //21-01-2017 
     let endDate   = new Date("2018-07-28"); //26-07-2018
@@ -25,18 +25,18 @@ if(prices && spents && supplies) {
             spentLiters: 0,
             priceGas: 0,
             presentGas: 0
-        })
-    })
+        });
+    });
 
     /* Adding spentLiters */
     xobj.forEach(obj => {
         
         spents.forEach(spent => {
             
-            if(obj.date === spent.date) {
+            if (obj.date === spent.date) {
 
-                obj.spentLiters = (spent.value / 12);
-            }
+                obj.spentLiters = parseFloat((spent.value / 12).toFixed(2));
+            };
         });
     });
 
@@ -45,52 +45,45 @@ if(prices && spents && supplies) {
         
         prices.forEach(price => {
             
-            if(obj.date === price.date) {
+            if (obj.date === price.date) {
 
                 obj.priceGas = price.value;
-            }
+            };
         });
     });
 
     /* Getting priceGas validity */
-    for(let i = 0; i < xobj.length; i++) {
+    for (let i = 0; i < xobj.length; i++) {
 
-        if(xobj[i-1] !== undefined) {
+        if (xobj[i].priceGas === 0) {
 
-            if(xobj[i].priceGas === 0) {
-
-                xobj[i].priceGas = xobj[i-1].priceGas;
-            }
-        }
-    }
+            xobj[i].priceGas = xobj[i-1].priceGas;
+        };
+    };
 
     /* Adding suppliedLiters */
     xobj.forEach(obj => {
         
         supplies.forEach(supply => {
             
-            if(obj.date === supply.date) {
+            if (obj.date === supply.date) {
 
-                obj.suppliedLiters = (supply.value / obj.priceGas);
-            }
+                obj.suppliedLiters = parseFloat((supply.value / obj.priceGas).toFixed(2));
+            };
         });
     });
 
     /* Total */
-    for(let i = 0; i < xobj.length; i++) {
-        
-        if(xobj[i-1] !== undefined) {
+    for(let i = 1; i < xobj.length; i++) {
 
-            xobj[i].presentGas = (xobj[i].suppliedLiters - xobj[i].spentLiters) + (xobj[i-1].presentGas);
-        }
-    }
+        xobj[i].presentGas = (xobj[i].suppliedLiters - xobj[i].spentLiters) + (xobj[i-1].presentGas);
+    };
 
     /* Debugger */
     xobj.map((value) => {
 
-        // let teste = archive.formatNumber(value.presentGas, 2)
         console.log(value.presentGas)
-    })
+    });
 
     /* Creating the object destiny to POST */
     xobj.map((value) => {
@@ -100,8 +93,8 @@ if(prices && spents && supplies) {
         yobj.push({
             date: value.date,
             value: result
-        })
-    })
+        });
+    });
 
     /* Create json.file */
     archive.createJson(xobj);

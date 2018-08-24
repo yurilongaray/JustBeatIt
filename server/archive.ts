@@ -73,13 +73,6 @@ class Archive {
 
         return [dia, mes, ano].join('/');
     }
-
-    public formatNumber(number: number, decimals: number) { 
-
-        var aux = Math.pow(10, decimals)
-        
-        return Math.floor(number * aux)/aux
-    }
 }
 
 export default Archive;

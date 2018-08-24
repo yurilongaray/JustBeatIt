@@ -44,18 +44,16 @@ prices	supplies	spents
 
 Para cada abastecimento, você deverá descobrir quantos litros foram adicionados com base no valor vigente do combustível na data do abastecimento.
 Exemplo: no dia 11/01/2017, o valor do combustível era R$ 4,96 o litro. O valor total do abastecimento foi de R$ 149,47. Ou seja, foram abastecidos 30.13 litros.
-Resultado = data X, (spents.value / prices.value)
 
 Para cada uso do veículo, você deverá calcular a quantidade de combustível gasta levando em consideração o consumo estimado.
 Exemplo: No dia 11/01/2017 o veículo percorreu 155.1 km. Como o consumo estimado do veículo é de 12 km/l (no exemplo), conclui-se que o veículo gastou 12.92 litros de combustível.
 155,1 / 12 = 12,92
 
-
 Após calcular o saldo de todos os dias você deverá enviar o resultado para a API: POST /check?id=SEU-ID. No exemplo, o payload enviado foi:
 
  [{ 
   date: '11/01/2017',
-  value: 17.208
+  value: 17.20
  },{
   date: '12/01/2017',
   value: 17.20
@@ -70,11 +68,6 @@ Após calcular o saldo de todos os dias você deverá enviar o resultado para a 
 Essa API irá retornar o quão próximo você está da resposta correta. No exemplo, o resultado retonardo foi 1, ou seja 100% dos valores estão corretos.
 
 Dicas importantes:
-
 OK - Salve os dados de prices, supplies e spents em arquivos locais se quiser economizar tempo, já que serão dados bem grandes.
-Mesmo que não hajam abastecimentos ou gastos em um dia você deve informar o saldo para o mesmo em seu resultado final.
-Arredonde todos os valores para 2 casas decimais.
-Você pode gerar os dados novamente passando ?reload=true nesta mesma página.
-Você pode chamar a API de verificação quantas vezes quiser, o maior resultado será o que prevalecerá.
-Não desista 🙂
-Você pode ver sua colocação no ranking geral acessando /rank ou o seu progresso em /progress/[SEU-ID]
+OK - Mesmo que não hajam abastecimentos ou gastos em um dia você deve informar o saldo para o mesmo em seu resultado final.
+OK - Arredonde todos os valores para 2 casas decimais.
