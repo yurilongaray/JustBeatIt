@@ -1,7 +1,11 @@
 import Archive from "./archive";
 
 //Leitura dos arquivos (Home, Work):
-const archive: any = new Archive('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json','/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
+const archive: any = new Archive(
+    './database/prices.json',
+    './database/spents.json',
+    './database/supplies.json'
+);
 // const archive = new Archive('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 
 let prices: any   = archive.prices; //alteração do preço do combustível.
@@ -100,6 +104,5 @@ if (prices && spents && supplies) {
     archive.createJson(xobj);
 
     /* Send POST do destiny */
-    // archive.sendPost(yobj);
-
+    archive.sendPost(yobj);
 }

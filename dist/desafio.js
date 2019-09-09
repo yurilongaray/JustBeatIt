@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var archive_1 = require("./archive");
 //Leitura dos arquivos (Home, Work):
-var archive = new archive_1.default('/home/sofit/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/sofit/Área de Trabalho/DesafioDesafiante/server/supplies.json');
+var archive = new archive_1.default('./database/prices.json', './database/spents.json', './database/supplies.json');
 // const archive = new Archive('/home/yuri/Área de Trabalho/DesafioDesafiante/server/prices.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/spents.json', '/home/yuri/Área de Trabalho/DesafioDesafiante/server/supplies.json');
 var prices = archive.prices; //alteração do preço do combustível.
 var spents = archive.spents; //uso do veículo em quilômetros (quilometragem percorrida no dia).
@@ -78,5 +78,5 @@ if (prices && spents && supplies) {
     /* Create json.file */
     archive.createJson(xobj);
     /* Send POST do destiny */
-    // archive.sendPost(yobj);
+    archive.sendPost(yobj);
 }

@@ -19,7 +19,8 @@ var Archive = /** @class */ (function () {
     };
     Archive.prototype.sendPost = function (obj) {
         var url = 'https://challenge-for-adventurers.herokuapp.com';
-        var id = '5b7c0c20cf8c8200147dcdc5';
+        var id = '5d764cb56c3b3200148469e7';
+        // 5b7c0c20cf8c8200147dcdc5 e 5d764cb56c3b3200148469e7
         console.log("Iniciando POST para: " + url + "/check?" + id);
         node_fetch_1.default(url + "/check?id=" + id, {
             method: 'POST',
@@ -50,10 +51,6 @@ var Archive = /** @class */ (function () {
         if (dia.length < 2)
             dia = '0' + dia;
         return [dia, mes, ano].join('/');
-    };
-    Archive.prototype.formatNumber = function (number, decimals) {
-        var aux = Math.pow(10, decimals);
-        return Math.floor(number * aux) / aux;
     };
     return Archive;
 }());

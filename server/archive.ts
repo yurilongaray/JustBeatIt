@@ -30,7 +30,9 @@ class Archive {
     public sendPost(obj: Object) {
 
         const url = 'https://challenge-for-adventurers.herokuapp.com';
-        const id  = '5b7c0c20cf8c8200147dcdc5';
+        const id  = '5d764cb56c3b3200148469e7';
+
+        // 5b7c0c20cf8c8200147dcdc5 e 5d764cb56c3b3200148469e7
         
         console.log(`Iniciando POST para: ${url}/check?${id}`)
 

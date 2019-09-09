@@ -71,3 +71,7 @@ Dicas importantes:
 OK - Salve os dados de prices, supplies e spents em arquivos locais se quiser economizar tempo, já que serão dados bem grandes.
 OK - Mesmo que não hajam abastecimentos ou gastos em um dia você deve informar o saldo para o mesmo em seu resultado final.
 OK - Arredonde todos os valores para 2 casas decimais.
+
+Para executar: 
+    tsc --build
+    npm start
